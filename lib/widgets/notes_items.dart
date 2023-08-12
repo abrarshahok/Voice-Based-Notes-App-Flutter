@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:voice_based_notes_app/providers/notes_provider.dart';
 import '/screens/text_to_speech_screen.dart';
 import 'package:intl/intl.dart';
 
@@ -84,7 +86,11 @@ class NotesItems extends StatelessWidget {
               ),
               const Divider(),
               gap(10),
-              Text(description, style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                description,
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.justify,
+              ),
             ],
           ),
         );
@@ -118,7 +124,9 @@ class NotesItems extends StatelessWidget {
           style: Theme.of(context).textTheme.titleSmall,
         ),
         trailing: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Provider.of<Notes>(context, listen: false).deleteNote(id);
+          },
           icon: const Icon(Icons.delete),
           color: Colors.redAccent,
         ),
