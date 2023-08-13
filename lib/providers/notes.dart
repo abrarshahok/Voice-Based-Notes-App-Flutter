@@ -1,8 +1,7 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:io';
 
 class NotesInfo {
   final String id;
@@ -11,7 +10,7 @@ class NotesInfo {
   final DateTime dateTime;
 
   NotesInfo({
-    required this.id,
+    this.id = '',
     required this.title,
     required this.description,
     required this.dateTime,
@@ -20,13 +19,17 @@ class NotesInfo {
 
 class Notes extends ChangeNotifier {
   List<NotesInfo> _notes = [];
+
   List<NotesInfo> get notes {
     return [..._notes];
   }
 
+  Notes(this._authToken, this._userId, this._notes);
+  final String _authToken;
+  final String _userId;
   Future<void> fetchNotesInfo() async {
-    const url =
-        'https://notes-app-a8567-default-rtdb.firebaseio.com/notes.json';
+    final url =
+        'https://notes-app-a8567-default-rtdb.firebaseio.com/notes.json?auth=$_authToken&orderBy="userId"&equalTo="$_userId"';
     try {
       final response = await http.get(Uri.parse(url));
       final responseData = json.decode(response.body);
@@ -53,13 +56,14 @@ class Notes extends ChangeNotifier {
   }
 
   Future<void> saveNote(NotesInfo info) async {
-    const url =
-        'https://notes-app-a8567-default-rtdb.firebaseio.com/notes.json';
+    final url =
+        'https://notes-app-a8567-default-rtdb.firebaseio.com/notes.json?auth=$_authToken';
     try {
       final response = await http.post(
         Uri.parse(url),
         body: json.encode(
           {
+            'userId': _userId,
             'title': info.title,
             'description': info.description,
             'dateTime': info.dateTime.toIso8601String(),
@@ -85,7 +89,7 @@ class Notes extends ChangeNotifier {
     if (currentIndex >= 0) {
       final id = info.id;
       final url =
-          'https://notes-app-a8567-default-rtdb.firebaseio.com/notes/$id.json';
+          'https://notes-app-a8567-default-rtdb.firebaseio.com/notes/$id.json?auth=$_authToken';
 
       try {
         await http.patch(
@@ -108,7 +112,7 @@ class Notes extends ChangeNotifier {
 
   Future<void> deleteNote(String id) async {
     final url =
-        'https://notes-app-a8567-default-rtdb.firebaseio.com/notes/$id.json';
+        'https://notes-app-a8567-default-rtdb.firebaseio.com/notes/$id.json?auth=$_authToken';
     int currentIndex = _notes.indexWhere((note) => note.id == id);
     final noteToBeDeleted = _notes[currentIndex];
     _notes.removeAt(currentIndex);

@@ -3,7 +3,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import '/providers/notes_provider.dart';
+import '../providers/notes.dart';
 
 class TextToSpeechScreen extends StatefulWidget {
   static const routeName = '/text-to-speech-screen';
@@ -19,7 +19,7 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
   bool _enableTyping = false;
   bool _didChange = true;
   bool _isLoading = false;
-  late String _id;
+  String _id = '';
 
   void _startListening() async {
     if (!_speechEnabled) {
@@ -123,7 +123,7 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
       _isLoading = true;
     });
     final notesInfo = NotesInfo(
-      id: _id.isEmpty ? '' : _id,
+      
       title: _titleController.text,
       description: _descriptionController.text,
       dateTime: DateTime.now(),

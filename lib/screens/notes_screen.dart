@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '/providers/notes_provider.dart';
+import '/widgets/app_drawer.dart';
+import '../providers/notes.dart';
 import '/screens/text_to_speech_screen.dart';
 import '/widgets/notes_items.dart';
 
 class NotesScreen extends StatefulWidget {
+  static const routeName = '/notes-screen';
   @override
   State<NotesScreen> createState() => _NotesScreenState();
 }
@@ -45,20 +47,26 @@ class _NotesScreenState extends State<NotesScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Row(
-          children: [
-            const Icon(
+        leading: Builder(
+          builder: (ctx) => IconButton(
+            icon: const Icon(
               Icons.grid_view_rounded,
               size: 40,
               color: Colors.black,
             ),
-            const SizedBox(width: 20),
-            Text('All Notes', style: Theme.of(context).textTheme.titleLarge),
-          ],
+            onPressed: () {
+              Scaffold.of(ctx).openDrawer();
+            },
+          ),
+        ),
+        title: Text(
+          'All Notes',
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         elevation: 0,
         backgroundColor: Colors.white,
       ),
+      drawer: AppDrawer(),
       body: RefreshIndicator(
         onRefresh: () {
           return Provider.of<Notes>(context, listen: false).fetchNotesInfo();

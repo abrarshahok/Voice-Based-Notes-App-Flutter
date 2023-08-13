@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_based_notes_app/providers/notes_provider.dart';
+import 'package:voice_based_notes_app/providers/notes.dart';
 import '/screens/text_to_speech_screen.dart';
 import 'package:intl/intl.dart';
 
