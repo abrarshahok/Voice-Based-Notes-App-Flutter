@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
@@ -84,9 +85,9 @@ class Notes extends ChangeNotifier {
     }
   }
 
-  Future<void> updateNote(NotesInfo info) async {
-    int currentIndex = _notes.indexWhere((note) => note.id == info.id);
-
+  Future<void> updateNote(String id, NotesInfo info) async {
+    int currentIndex = _notes.indexWhere((note) => note.id == id);
+    print(currentIndex);
     if (currentIndex >= 0) {
       final id = info.id;
       final url =

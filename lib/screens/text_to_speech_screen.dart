@@ -125,14 +125,13 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
       _isLoading = true;
     });
     final notesInfo = NotesInfo(
-      
       title: _titleController.text,
       description: _descriptionController.text,
       dateTime: DateTime.now(),
     );
     if (_id.isNotEmpty) {
       Provider.of<Notes>(context, listen: false)
-          .updateNote(notesInfo)
+          .updateNote(_id, notesInfo)
           .catchError((_) {
         return showDialogMessage();
       }).then((_) {
@@ -150,8 +149,8 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
         setState(() {
           _isLoading = true;
         });
+        Navigator.of(context).pop();
       });
-      Navigator.of(context).pop();
     }
   }
 

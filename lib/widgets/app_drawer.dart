@@ -5,13 +5,13 @@ import '/providers/auth.dart';
 import '/screens/notes_screen.dart';
 import '/screens/text_to_speech_screen.dart';
 
+// ignore: must_be_immutable
 class AppDrawer extends StatelessWidget {
+  AppDrawer({super.key});
   Divider divider = const Divider(color: Colors.white);
 
   final imageUrl =
       'https://img.freepik.com/free-photo/hand-holding-writing-checklist-application-form-document-clipboard-white-background-3d-illustration_56104-1551.jpg';
-
-  AppDrawer({super.key});
 
   Widget cutomListTile({
     required BuildContext ctx,

@@ -61,9 +61,18 @@ class MainApp extends StatelessWidget {
               ),
             ),
           ),
-          home: authData.isAuth ? const NotesScreen() : const AuthScreen(),
+          home: (authData.isAuth)
+              ? const NotesScreen()
+              : FutureBuilder(
+                  future: authData.tryAutoLogin(),
+                  builder: (context, snapshot) =>
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? const Center(child: CircularProgressIndicator())
+                          : const AuthScreen(),
+                ),
           routes: {
-            TextToSpeechScreen.routeName: (context) => const TextToSpeechScreen(),
+            TextToSpeechScreen.routeName: (context) =>
+                const TextToSpeechScreen(),
             NotesScreen.routeName: (context) => const NotesScreen(),
           },
         ),

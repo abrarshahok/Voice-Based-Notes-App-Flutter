@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '/screens/text_to_speech_screen.dart';
 import 'package:provider/provider.dart';
+import '/widgets/notes_items.dart';
 import '/widgets/app_drawer.dart';
 import '../providers/notes.dart';
-import '/screens/text_to_speech_screen.dart';
-import '/widgets/notes_items.dart';
 
 class NotesScreen extends StatefulWidget {
   static const routeName = '/notes-screen';
