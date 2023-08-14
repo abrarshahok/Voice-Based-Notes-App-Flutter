@@ -11,7 +11,7 @@ class NotesItems extends StatelessWidget {
   final String description;
   final DateTime dateTime;
 
-  const NotesItems({
+  const NotesItems({super.key, 
     required this.id,
     required this.title,
     required this.description,

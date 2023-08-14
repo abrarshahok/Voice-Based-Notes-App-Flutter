@@ -8,6 +8,8 @@ import '/widgets/notes_items.dart';
 
 class NotesScreen extends StatefulWidget {
   static const routeName = '/notes-screen';
+
+  const NotesScreen({super.key});
   @override
   State<NotesScreen> createState() => _NotesScreenState();
 }

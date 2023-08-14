@@ -7,6 +7,8 @@ import '../providers/notes.dart';
 
 class TextToSpeechScreen extends StatefulWidget {
   static const routeName = '/text-to-speech-screen';
+
+  const TextToSpeechScreen({super.key});
   @override
   State<TextToSpeechScreen> createState() => _TextToSpeechScreenState();
 }

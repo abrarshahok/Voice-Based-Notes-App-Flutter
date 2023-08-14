@@ -1,16 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '/screens/notes_screen.dart';
 
 import '../providers/auth.dart';
 
 enum AuthMode { signup, login }
 
 const imageUrl =
-    'https://img.freepik.com/free-photo/computer-security-with-login-password-padlock_107791-16191.jpg?w=1380&t=st=1691925159~exp=1691925759~hmac=abb843cdec5999a29081ca768427245cef0bd1102590f6f4dff486bbf871351f';
+    'https://img.freepik.com/free-photo/computer-security-with-login-password-padlock_107791-16191.jpg';
 
 class AuthScreen extends StatelessWidget {
+  const AuthScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +31,7 @@ class AuthScreen extends StatelessWidget {
                 height: 200,
                 fit: BoxFit.cover,
               ),
-              AuthCard(),
+              const AuthCard(),
             ],
           ),
         ),
@@ -40,6 +41,8 @@ class AuthScreen extends StatelessWidget {
 }
 
 class AuthCard extends StatefulWidget {
+  const AuthCard({super.key});
+
   @override
   State<AuthCard> createState() => _AuthCardState();
 }
@@ -138,7 +141,7 @@ class _AuthCardState extends State<AuthCard> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     return Card(
-      elevation: 50,
+      elevation: 10,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
@@ -212,6 +215,7 @@ class _AuthCardState extends State<AuthCard> {
                       horizontal: 30.0,
                       vertical: 8.0,
                     ),
+                    backgroundColor: Colors.grey[200],
                   ),
                   onPressed: _submit,
                   child: Text(
@@ -230,6 +234,7 @@ class _AuthCardState extends State<AuthCard> {
                 ),
                 child: Text(
                   '${_authMode == AuthMode.login ? 'SIGN UP' : 'LOGIN'} INSTEAD',
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
             ],

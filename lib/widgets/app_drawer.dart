@@ -9,7 +9,9 @@ class AppDrawer extends StatelessWidget {
   Divider divider = const Divider(color: Colors.white);
 
   final imageUrl =
-      'https://img.freepik.com/free-photo/hand-holding-writing-checklist-application-form-document-clipboard-white-background-3d-illustration_56104-1551.jpg?w=996&t=st=1691936318~exp=1691936918~hmac=d1e9ba18021c9c0eb87e9a6e3cccef2d1d2f9a4b1536d84696b5ab3017a7a1b5';
+      'https://img.freepik.com/free-photo/hand-holding-writing-checklist-application-form-document-clipboard-white-background-3d-illustration_56104-1551.jpg';
+
+  AppDrawer({super.key});
 
   Widget cutomListTile({
     required BuildContext ctx,

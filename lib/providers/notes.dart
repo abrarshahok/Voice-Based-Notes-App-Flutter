@@ -39,7 +39,8 @@ class Notes extends ChangeNotifier {
       final Map<String, dynamic> notesInfo = responseData;
       final List<NotesInfo> loadedNotes = [];
       notesInfo.forEach((noteId, noteData) {
-        loadedNotes.add(
+        loadedNotes.insert(
+          0,
           NotesInfo(
             id: noteId,
             title: noteData['title'],
@@ -76,7 +77,7 @@ class Notes extends ChangeNotifier {
         description: info.description,
         dateTime: info.dateTime,
       );
-      _notes.add(newNote);
+      _notes.insert(0, newNote);
       notifyListeners();
     } catch (_) {
       rethrow;

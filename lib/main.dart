@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_based_notes_app/screens/notes_screen.dart';
 import '/providers/auth.dart';
 import '/screens/auth_screen.dart';
 import '/screens/text_to_speech_screen.dart';
-// import '/screens/notes_screen.dart';
+import '/screens/notes_screen.dart';
 import 'providers/notes.dart';
 
 void main() {
@@ -57,15 +56,15 @@ class MainApp extends StatelessWidget {
                 fontSize: 16,
               ),
               titleSmall: GoogleFonts.mavenPro(
-                color: Colors.black,
+                color: Colors.grey,
                 fontSize: 13,
               ),
             ),
           ),
-          home: authData.isAuth ? NotesScreen() : AuthScreen(),
+          home: authData.isAuth ? const NotesScreen() : const AuthScreen(),
           routes: {
-            TextToSpeechScreen.routeName: (context) => TextToSpeechScreen(),
-            NotesScreen.routeName: (context) => NotesScreen(),
+            TextToSpeechScreen.routeName: (context) => const TextToSpeechScreen(),
+            NotesScreen.routeName: (context) => const NotesScreen(),
           },
         ),
       ),
