@@ -56,9 +56,7 @@ class _NotesScreenState extends State<NotesScreen> {
               size: 40,
               color: Colors.black,
             ),
-            onPressed: () {
-              Scaffold.of(ctx).openDrawer();
-            },
+            onPressed: () => Scaffold.of(ctx).openDrawer(),
           ),
         ),
         title: Text(
@@ -73,31 +71,65 @@ class _NotesScreenState extends State<NotesScreen> {
         onRefresh: () {
           return Provider.of<Notes>(context, listen: false).fetchNotesInfo();
         },
-        child: FutureBuilder(
-          future: _futureNotes,
-          builder: (context, snapshot) {
-            if (snapshot.error != null) {
-              return showMessage('Something went wrong!');
-            } else if (snapshot.connectionState == ConnectionState.waiting) {
-              return circularProgressIndicator;
-            }
-            return Consumer<Notes>(
-              builder: (ctx, notesInfo, _) {
-                if (notesInfo.notes.isEmpty) {
-                  return showMessage('No notes added yet!');
-                }
-                return ListView.builder(
-                  itemCount: notesInfo.notes.length,
-                  itemBuilder: (ctx, index) => NotesItems(
-                    id: notesInfo.notes[index].id,
-                    title: notesInfo.notes[index].title,
-                    description: notesInfo.notes[index].description,
-                    dateTime: notesInfo.notes[index].dateTime,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(30),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: Colors.grey[100],
+                ),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Search',
+                    prefixIcon: const Icon(Icons.search, size: 20),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    constraints: const BoxConstraints(maxHeight: 50),
                   ),
+                  onChanged: (title) {
+                    bool isEmpty = title.trim().isEmpty;
+                    if (isEmpty) {
+                      _getFutureNotes();
+                    }
+                    Provider.of<Notes>(context, listen: false)
+                        .searchNotes(title);
+                  },
+                ),
+              ),
+            ),
+            FutureBuilder(
+              future: _futureNotes,
+              builder: (context, snapshot) {
+                if (snapshot.error != null) {
+                  return showMessage('Something went wrong!');
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return circularProgressIndicator;
+                }
+                return Consumer<Notes>(
+                  builder: (ctx, notesInfo, _) {
+                    if (notesInfo.notes.isEmpty) {
+                      return showMessage('No notes added yet!');
+                    }
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: notesInfo.notes.length,
+                        itemBuilder: (ctx, index) => NotesItems(
+                          id: notesInfo.notes[index].id,
+                          title: notesInfo.notes[index].title,
+                          description: notesInfo.notes[index].description,
+                          dateTime: notesInfo.notes[index].dateTime,
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
-            );
-          },
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(

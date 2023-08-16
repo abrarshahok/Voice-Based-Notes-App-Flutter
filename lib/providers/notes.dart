@@ -34,6 +34,7 @@ class Notes extends ChangeNotifier {
     try {
       final response = await http.get(Uri.parse(url));
       final responseData = json.decode(response.body);
+
       if (responseData == null) {
         return;
       }
@@ -55,6 +56,25 @@ class Notes extends ChangeNotifier {
     } catch (_) {
       rethrow;
     }
+  }
+
+  void searchNotes(String title) {
+    final List<NotesInfo> loadedNotes = [];
+    for (var note in _notes) {
+      if (note.title.contains(title)) {
+        loadedNotes.insert(
+          0,
+          NotesInfo(
+            id: note.id,
+            title: note.title,
+            description: note.description,
+            dateTime: note.dateTime,
+          ),
+        );
+      }
+    }
+    _notes = loadedNotes;
+    notifyListeners();
   }
 
   Future<void> saveNote(NotesInfo info) async {
@@ -87,9 +107,8 @@ class Notes extends ChangeNotifier {
 
   Future<void> updateNote(String id, NotesInfo info) async {
     int currentIndex = _notes.indexWhere((note) => note.id == id);
-    print(currentIndex);
+
     if (currentIndex >= 0) {
-      final id = info.id;
       final url =
           'https://notes-app-a8567-default-rtdb.firebaseio.com/notes/$id.json?auth=$_authToken';
 

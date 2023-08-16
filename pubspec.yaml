@@ -10,6 +10,7 @@ dependencies:
   avatar_glow: ^2.0.2
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
   google_fonts: ^5.1.0
   http: ^1.1.0
   intl: ^0.18.1
@@ -24,3 +25,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+flutter_icons:
+  android: true
+  image_path: "assets/icon/notes.png"
