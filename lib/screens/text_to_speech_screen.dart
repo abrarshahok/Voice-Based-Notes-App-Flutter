@@ -88,7 +88,7 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
     if (_didChange) {
       final info = ModalRoute.of(context)?.settings.arguments;
       if (info != null) {
-        final infoMap = info as Map<String, String>;
+        final infoMap = info as Map<String, dynamic>;
         _id = infoMap['id'] as String;
         _titleController.text = infoMap['title'] as String;
         _descriptionController.text = infoMap['description'] as String;

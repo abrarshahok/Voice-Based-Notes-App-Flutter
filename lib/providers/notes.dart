@@ -4,18 +4,48 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 
-class NotesInfo {
+class NotesInfo with ChangeNotifier {
   final String id;
   final String title;
   final String description;
   final DateTime dateTime;
+  bool isFavourite;
 
   NotesInfo({
     this.id = '',
     required this.title,
     required this.description,
     required this.dateTime,
+    this.isFavourite = false,
   });
+
+  void _setFavValue(bool newVal) {
+    isFavourite = newVal;
+    notifyListeners();
+  }
+
+  Future<void> toggleFavourites({
+    required String userId,
+    required String authToken,
+  }) async {
+    bool oldStatus = isFavourite;
+    final url =
+        'https://notes-app-a8567-default-rtdb.firebaseio.com/userFavourites/$userId/$id.json?auth=$authToken';
+    isFavourite = !isFavourite;
+    notifyListeners();
+    try {
+      final response = await http.put(
+        Uri.parse(url),
+        body: json.encode(isFavourite),
+      );
+      if (response.statusCode >= 400) {
+        _setFavValue(oldStatus);
+      }
+    } catch (_) {
+      _setFavValue(oldStatus);
+    }
+    notifyListeners();
+  }
 }
 
 class Notes extends ChangeNotifier {
@@ -38,6 +68,10 @@ class Notes extends ChangeNotifier {
       if (responseData == null) {
         return;
       }
+      final favUrl =
+          'https://notes-app-a8567-default-rtdb.firebaseio.com/userFavourites/$_userId.json?auth=$_authToken';
+      final favResponse = await http.get(Uri.parse(favUrl));
+      final favStatus = json.decode(favResponse.body);
       final Map<String, dynamic> notesInfo = responseData;
       final List<NotesInfo> loadedNotes = [];
       notesInfo.forEach((noteId, noteData) {
@@ -48,6 +82,7 @@ class Notes extends ChangeNotifier {
             title: noteData['title'],
             description: noteData['description'],
             dateTime: DateTime.parse(noteData['dateTime']),
+            isFavourite: favStatus == null ? false : favStatus[noteId] ?? false,
           ),
         );
       });
@@ -59,20 +94,8 @@ class Notes extends ChangeNotifier {
   }
 
   void searchNotes(String title) {
-    final List<NotesInfo> loadedNotes = [];
-    for (var note in _notes) {
-      if (note.title.contains(title)) {
-        loadedNotes.insert(
-          0,
-          NotesInfo(
-            id: note.id,
-            title: note.title,
-            description: note.description,
-            dateTime: note.dateTime,
-          ),
-        );
-      }
-    }
+    final List<NotesInfo> loadedNotes =
+        _notes.where((note) => note.title.contains(title)).toList();
     _notes = loadedNotes;
     notifyListeners();
   }

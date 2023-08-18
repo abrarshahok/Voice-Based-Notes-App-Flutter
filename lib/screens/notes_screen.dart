@@ -117,11 +117,10 @@ class _NotesScreenState extends State<NotesScreen> {
                     return Expanded(
                       child: ListView.builder(
                         itemCount: notesInfo.notes.length,
-                        itemBuilder: (ctx, index) => NotesItems(
-                          id: notesInfo.notes[index].id,
-                          title: notesInfo.notes[index].title,
-                          description: notesInfo.notes[index].description,
-                          dateTime: notesInfo.notes[index].dateTime,
+                        itemBuilder: (ctx, index) =>
+                            ChangeNotifierProvider.value(
+                          value: notesInfo.notes[index],
+                          child: NotesItems(),
                         ),
                       ),
                     );
