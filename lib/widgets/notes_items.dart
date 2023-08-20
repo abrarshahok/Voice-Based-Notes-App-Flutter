@@ -1,4 +1,5 @@
 import 'package:google_fonts/google_fonts.dart';
+import 'package:voice_based_notes_app/widgets/snackbar_widget.dart';
 import '/screens/notes_info_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -9,19 +10,8 @@ import '/providers/auth.dart';
 class NotesItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<NotesInfo>(context, listen: false);
+    final notes = Provider.of<NotesInfo>(context, listen: false);
     final authData = Provider.of<Auth>(context, listen: false);
-    void showInfo(BuildContext context) {
-      Navigator.of(context).pushNamed(
-        NotesInfoScreen.routeName,
-        arguments: {
-          'id': product.id,
-          'title': product.title,
-          'description': product.description,
-          'dateTime': product.dateTime,
-        },
-      );
-    }
 
     return Card(
       elevation: 5,
@@ -35,7 +25,7 @@ class NotesItems extends StatelessWidget {
         ),
         tileColor: Colors.grey[200],
         title: Text(
-          product.title,
+          notes.title,
           style: GoogleFonts.mavenPro(
             color: Colors.black,
             fontWeight: FontWeight.w500,
@@ -43,24 +33,37 @@ class NotesItems extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          DateFormat.MMMMd().format(product.dateTime),
+          DateFormat.MMMMd().format(notes.dateTime),
           style: Theme.of(context).textTheme.titleSmall,
         ),
         trailing: Consumer<NotesInfo>(
-          builder: (context, product, _) => IconButton(
-            onPressed: () {
-              product.toggleFavourites(
-                authToken: authData.token!,
-                userId: authData.userId!,
-              );
-            },
+          builder: (context, notes, _) => IconButton(
+            onPressed: () => notes
+                .toggleFavourites(
+                  authToken: authData.token!,
+                  userId: authData.userId!,
+                )
+                .then((_) => SnackBarWidget(
+                      context: context,
+                      label: notes.isFavourite
+                          ? 'Note added to favorite'
+                          : 'Note removed from favorites',
+                      color: Colors.grey[200]!,
+                    ).show()),
             icon: Icon(
-              product.isFavourite ? Icons.favorite : Icons.favorite_border,
+              notes.isFavourite ? Icons.favorite : Icons.favorite_border,
             ),
             color: Colors.redAccent,
           ),
         ),
-        onTap: () => showInfo(context),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ChangeNotifierProvider.value(
+              value: notes,
+              child: const NotesInfoScreen(),
+            ),
+          ),
+        ),
       ),
     );
   }

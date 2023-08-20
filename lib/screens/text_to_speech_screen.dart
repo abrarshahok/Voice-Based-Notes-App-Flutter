@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import '../providers/notes.dart';
+import '../widgets/snackbar_widget.dart';
 
 class TextToSpeechScreen extends StatefulWidget {
   static const routeName = '/text-to-speech-screen';
@@ -21,6 +22,7 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
   bool _enableTyping = false;
   bool _didChange = true;
   bool _isLoading = false;
+  bool _isFavourite = false;
   String _id = '';
 
   void _startListening() async {
@@ -69,10 +71,6 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
     );
   }
 
-  Widget gap(double n) {
-    return SizedBox(height: n);
-  }
-
   Widget customContainer({required Widget child}) {
     return Container(
       decoration: BoxDecoration(
@@ -92,6 +90,7 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
         _id = infoMap['id'] as String;
         _titleController.text = infoMap['title'] as String;
         _descriptionController.text = infoMap['description'] as String;
+        _isFavourite = infoMap['isFavourite'] as bool;
       }
       _didChange = false;
     }
@@ -121,53 +120,55 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
         _descriptionController.text.trim().isEmpty) {
       return;
     }
+
+    if (!mounted) {
+      return; // Check if the widget is still mounted before continuing
+    }
+
     setState(() {
       _isLoading = true;
     });
+
     final notesInfo = NotesInfo(
       title: _titleController.text,
       description: _descriptionController.text,
       dateTime: DateTime.now(),
+      isFavourite: _isFavourite,
     );
-    if (_id.isNotEmpty) {
-      Provider.of<Notes>(context, listen: false)
-          .updateNote(_id, notesInfo)
-          .catchError((_) {
-        return showDialogMessage();
-      }).then((_) {
-        setState(() {
-          _isLoading = true;
-        });
-        Navigator.of(context).pop();
+
+    final notesProvider = Provider.of<Notes>(context, listen: false);
+
+    final saveOrUpdateFuture = _id.isNotEmpty
+        ? notesProvider.updateNote(_id, notesInfo)
+        : notesProvider.saveNote(notesInfo);
+
+    saveOrUpdateFuture.catchError((_) => showDialogMessage()).then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isLoading = false;
       });
-    } else {
-      Provider.of<Notes>(context, listen: false)
-          .saveNote(notesInfo)
-          .catchError((_) {
-        return showDialogMessage();
-      }).then((_) {
-        setState(() {
-          _isLoading = true;
-        });
-        Navigator.of(context).pop();
-      });
-    }
+      SnackBarWidget(
+        context: context,
+        label: 'Note ${_id.isNotEmpty ? "updated" : "added"} successfully',
+        color: Colors.grey[200]!,
+      ).show();
+      Navigator.of(context).pop();
+    });
   }
 
-  Center circularProgressIndicator = const Center(
-    child: CircularProgressIndicator(),
-  );
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
-    _speechToText.cancel();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _titleController.dispose();
+  //   _descriptionController.dispose();
+  //   _speechToText.cancel();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final bool isFocus = MediaQuery.of(context).viewInsets.bottom == 0.0;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -182,7 +183,9 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
         ],
       ),
       body: _isLoading
-          ? circularProgressIndicator
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
           : SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -195,7 +198,7 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
                         color: Colors.black,
                         size: 20,
                       ),
-                      gap(20),
+                      const SizedBox(height: 20),
                       customContainer(
                         child: TextField(
                           controller: _titleController,
@@ -209,7 +212,7 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
                           onTapOutside: (_) => FocusScope.of(context).unfocus(),
                         ),
                       ),
-                      gap(50),
+                      const SizedBox(height: 50),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -237,7 +240,7 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
                           )
                         ],
                       ),
-                      gap(20),
+                      const SizedBox(height: 20),
                       customContainer(
                         child: TextField(
                           controller: _descriptionController,
@@ -259,7 +262,7 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
               ),
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: (!_enableTyping && !_isLoading)
+      floatingActionButton: (isFocus && !_enableTyping)
           ? AvatarGlow(
               endRadius: 75.0,
               animate: _speechEnabled,
@@ -280,7 +283,7 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
                 ),
               ),
             )
-          : Container(),
+          : null,
     );
   }
 }

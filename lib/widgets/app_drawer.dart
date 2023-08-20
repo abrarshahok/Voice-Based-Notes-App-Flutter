@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:voice_based_notes_app/screens/app_screen.dart';
 import '/providers/auth.dart';
-import '/screens/notes_screen.dart';
 import '/screens/text_to_speech_screen.dart';
 
 // ignore: must_be_immutable
@@ -51,15 +51,6 @@ class AppDrawer extends StatelessWidget {
               imageUrl,
               fit: BoxFit.cover,
             ),
-          ),
-          divider,
-          cutomListTile(
-            ctx: context,
-            title: 'All Notes',
-            icon: Icons.speaker_notes_rounded,
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(NotesScreen.routeName);
-            },
           ),
           divider,
           cutomListTile(

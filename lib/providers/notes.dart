@@ -55,6 +55,10 @@ class Notes extends ChangeNotifier {
     return [..._notes];
   }
 
+  List<NotesInfo> get favNotes {
+    return _notes.where((note) => note.isFavourite).toList();
+  }
+
   Notes(this._authToken, this._userId, this._notes);
   final String _authToken;
   final String _userId;
@@ -86,6 +90,7 @@ class Notes extends ChangeNotifier {
           ),
         );
       });
+      loadedNotes.sort((a, b) => b.dateTime.compareTo(a.dateTime));
       _notes = loadedNotes;
       notifyListeners();
     } catch (_) {
@@ -94,8 +99,11 @@ class Notes extends ChangeNotifier {
   }
 
   void searchNotes(String title) {
-    final List<NotesInfo> loadedNotes =
-        _notes.where((note) => note.title.contains(title)).toList();
+    final List<NotesInfo> loadedNotes = _notes
+        .where((note) => note.title.toLowerCase().contains(
+              title.toLowerCase(),
+            ))
+        .toList();
     _notes = loadedNotes;
     notifyListeners();
   }
@@ -146,7 +154,8 @@ class Notes extends ChangeNotifier {
             },
           ),
         );
-        _notes[currentIndex] = info;
+        _notes.removeAt(currentIndex);
+        _notes.insert(0, info);
         notifyListeners();
       } catch (_) {
         rethrow;

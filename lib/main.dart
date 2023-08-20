@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '/screens/text_to_speech_screen.dart';
 import 'package:provider/provider.dart';
-import '/screens/notes_info_screen.dart';
+import '/screens/app_screen.dart';
 import '/providers/auth.dart';
 import '/screens/auth_screen.dart';
-import '/screens/text_to_speech_screen.dart';
-import '/screens/notes_screen.dart';
 import 'providers/notes.dart';
 
 void main() {
@@ -63,7 +62,7 @@ class MainApp extends StatelessWidget {
             ),
           ),
           home: (authData.isAuth)
-              ? const NotesScreen()
+              ? const AppScreen()
               : FutureBuilder(
                   future: authData.tryAutoLogin(),
                   builder: (context, snapshot) =>
@@ -74,8 +73,7 @@ class MainApp extends StatelessWidget {
           routes: {
             TextToSpeechScreen.routeName: (context) =>
                 const TextToSpeechScreen(),
-            NotesScreen.routeName: (context) => const NotesScreen(),
-            NotesInfoScreen.routeName: (context) => NotesInfoScreen(),
+            AppScreen.routeName: (context) => const AppScreen(),
           },
         ),
       ),
