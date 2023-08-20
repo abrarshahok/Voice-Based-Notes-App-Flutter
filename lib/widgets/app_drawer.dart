@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:voice_based_notes_app/screens/app_screen.dart';
 import '/providers/auth.dart';
 import '/screens/text_to_speech_screen.dart';
 
@@ -68,8 +67,30 @@ class AppDrawer extends StatelessWidget {
             title: 'Logout',
             icon: Icons.logout,
             onTap: () {
-              Scaffold.of(context).closeDrawer();
-              Provider.of<Auth>(context, listen: false).logout();
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Are you sure?'),
+                    content: const Text('Do you want to logout?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('No'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Scaffold.of(context).closeDrawer();
+                          Provider.of<Auth>(context, listen: false).logout();
+                        },
+                        child: const Text('Yes'),
+                      ),
+                    ],
+                  );
+                },
+              );
             },
           ),
         ],
