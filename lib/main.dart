@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:voice_based_notes_app/helpers/custom_route_animation.dart';
 import '/screens/text_to_speech_screen.dart';
 import 'package:provider/provider.dart';
 import '/screens/app_screen.dart';
@@ -42,6 +43,11 @@ class MainApp extends StatelessWidget {
         builder: (context, authData, _) => MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
+            pageTransitionsTheme: PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: CustomRouteAnimation(),
+              },
+            ),
             colorScheme: ColorScheme.fromSwatch(
               primarySwatch: Colors.grey,
             ),
