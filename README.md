@@ -23,8 +23,8 @@ This app leverages speech-to-text technology to convert spoken words into text n
 
 Follow these instructions to get started with the Voice-Based Notes App:
 
-1. Clone this repository: `git clone [repository-url]`
-2. Navigate to the project directory: `cd voice_based_notes_app`
+1. Clone this repository: `git clone https://github.com/abrar-ahmed-21bscs20/Voice-Based-Notes-App-Flutter.git`
+2. Navigate to the project directory: `cd Voice-Based-Notes-App-Flutter`
 3. Install dependencies: `flutter pub get`
 4. Run the app: `flutter run`
 
