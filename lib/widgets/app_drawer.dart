@@ -82,7 +82,7 @@ class AppDrawer extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          Scaffold.of(context).closeDrawer();
+                          Navigator.of(context).pop();
                           Provider.of<Auth>(context, listen: false).logout();
                         },
                         child: const Text('Yes'),

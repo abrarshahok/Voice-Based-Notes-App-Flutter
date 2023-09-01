@@ -147,11 +147,13 @@ class _AuthCardState extends State<AuthCard> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      child: Container(
-        height: _authMode == AuthMode.signup ? 380 : 300,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.bounceIn,
+        height: _authMode == AuthMode.signup ? 320 : 260,
         width: deviceSize.width * 0.9,
         constraints: BoxConstraints(
-          minHeight: _authMode == AuthMode.signup ? 380 : 300,
+          minHeight: _authMode == AuthMode.signup ? 320 : 260,
         ),
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -164,7 +166,6 @@ class _AuthCardState extends State<AuthCard> {
                 onTapOutside: (event) => FocusScope.of(context).unfocus(),
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
-                focusNode: _passwordFocusNode,
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_passwordFocusNode);
                 },
@@ -183,9 +184,7 @@ class _AuthCardState extends State<AuthCard> {
                 onTapOutside: (event) => FocusScope.of(context).unfocus(),
                 obscureText: true,
                 controller: _passwordController,
-                focusNode: (_authMode == AuthMode.signup)
-                    ? _confirmPasswordFocusNode
-                    : null,
+                focusNode: _passwordFocusNode,
                 textInputAction: (_authMode == AuthMode.login)
                     ? TextInputAction.done
                     : TextInputAction.next,
@@ -204,22 +203,25 @@ class _AuthCardState extends State<AuthCard> {
                 },
               ),
               if (_authMode == AuthMode.signup)
-                TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Confirm Password',
-                  ),
-                  textInputAction: TextInputAction.done,
-                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
-                  obscureText: true,
-                  onFieldSubmitted: (_) => _submit(),
-                  validator: _authMode == AuthMode.signup
-                      ? (pass) {
-                          if (pass != _passwordController.text) {
-                            return 'Password do not match';
+                Expanded(
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Confirm Password',
+                    ),
+                    textInputAction: TextInputAction.done,
+                    onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                    obscureText: true,
+                    focusNode: _confirmPasswordFocusNode,
+                    onFieldSubmitted: (_) => _submit(),
+                    validator: _authMode == AuthMode.signup
+                        ? (pass) {
+                            if (pass != _passwordController.text) {
+                              return 'Password do not match';
+                            }
+                            return null;
                           }
-                          return null;
-                        }
-                      : null,
+                        : null,
+                  ),
                 ),
               const SizedBox(height: 10),
               if (_isLoading)
